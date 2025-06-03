@@ -1,19 +1,32 @@
+html,
 body {
-  background-color: #1c1c1c;
+  overflow-x: hidden;
+}
+
+body {
+  background-color: #1a1a1a;
   color: #ffffff;
   font-family: "Poppins", sans-serif;
   text-align: center;
-  padding: 50px;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
   touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
 }
 
 .container {
   background-color: #2c2c2c;
-  padding: 40px;
+  padding: 20px;
   border-radius: 20px;
   display: inline-block;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-  max-width: 90%;
+  max-width: 400px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 h1 {
@@ -63,12 +76,12 @@ button:disabled {
   background-color: #2196f3;
 }
 
+#resetBtn {
+  background-color: #e53935;
+}
+
 #message {
   margin-top: 25px;
   font-size: 22px;
   color: #ffd54f;
-}
-
-#resetBtn {
-  background-color: #e53935;
 }

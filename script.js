@@ -1,80 +1,58 @@
 let count = 0;
-let timer;
-let countdownTimer;
-let timeLeft = 10;
+let timer = 10;
+let interval;
+let resultShown = false;
 
-const countDisplay = document.getElementById("count");
-const timerDisplay = document.getElementById("timer");
 const startBtn = document.getElementById("startBtn");
 const tapBtn = document.getElementById("tapBtn");
 const showResultBtn = document.getElementById("showResultBtn");
 const restartBtn = document.getElementById("restartBtn");
 const resetBtn = document.getElementById("resetBtn");
+const countDisplay = document.getElementById("count");
+const timerDisplay = document.getElementById("timer");
 const message = document.getElementById("message");
-const rankingList = document.getElementById("rankingList");
 
-// ランキング読み込み
-function loadRanking() {
-  const scores = JSON.parse(localStorage.getItem("ranking")) || [];
-  rankingList.innerHTML = "";
-  scores.forEach((score, index) => {
-    const li = document.createElement("li");
-    li.textContent = `${index + 1}位：${score} 回`;
-    rankingList.appendChild(li);
-  });
-
-  if (scores.length > 0) {
-    resetBtn.style.display = "block";
-  } else {
-    resetBtn.style.display = "none";
-  }
-}
-
-// ランキング更新
-function updateRanking(newScore) {
-  let scores = JSON.parse(localStorage.getItem("ranking")) || [];
-  scores.push(newScore);
-  scores.sort((a, b) => b - a);
-  scores = scores.slice(0, 3);
-  localStorage.setItem("ranking", JSON.stringify(scores));
-  loadRanking();
-}
-
-// カウントダウン開始
-function startCountdown() {
-  timeLeft = 10;
-  timerDisplay.textContent = `残り：${timeLeft}秒`;
-
-  countdownTimer = setInterval(() => {
-    timeLeft--;
-    timerDisplay.textContent = `残り：${timeLeft}秒`;
-    if (timeLeft <= 0) {
-      clearInterval(countdownTimer);
-    }
-  }, 1000);
+function resetApp() {
+  count = 0;
+  timer = 10;
+  countDisplay.textContent = "0";
+  timerDisplay.textContent = "準備中...";
+  message.textContent = "";
+  startBtn.style.display = "block";
+  tapBtn.style.display = "none";
+  showResultBtn.style.display = "none";
+  restartBtn.style.display = "none";
+  resetBtn.style.display = "none";
+  resultShown = false;
 }
 
 startBtn.addEventListener("click", () => {
   count = 0;
   countDisplay.textContent = count;
-  message.textContent = "スタート！";
-  tapBtn.disabled = false;
-  tapBtn.style.display = "inline-block";
+  timer = 10;
   startBtn.style.display = "none";
+  tapBtn.style.display = "block";
   showResultBtn.style.display = "none";
   restartBtn.style.display = "none";
+  resetBtn.style.display = "none";
+  message.textContent = "";
 
-  startCountdown();
+  interval = setInterval(() => {
+    timer--;
+    timerDisplay.textContent = `残り ${timer} 秒`;
+    if (timer <= 0) {
+      clearInterval(interval);
+      tapBtn.disabled = true;
+      tapBtn.style.backgroundColor = "#777";
+      timerDisplay.textContent = "終了！";
+      setTimeout(() => {
+        showResultBtn.style.display = "block";
+      }, 2000); // ← ここで2秒待って結果表示ボタン出現
+    }
+  }, 1000);
 
-  timer = setTimeout(() => {
-    tapBtn.disabled = true;
-    message.textContent = "終了！";
-
-    // 3秒後に「結果を表示」ボタン
-    setTimeout(() => {
-      showResultBtn.style.display = "inline-block";
-    }, 2000);
-  }, 10000);
+  tapBtn.disabled = false;
+  tapBtn.style.backgroundColor = "#03a9f4";
 });
 
 tapBtn.addEventListener("click", () => {
@@ -83,24 +61,22 @@ tapBtn.addEventListener("click", () => {
 });
 
 showResultBtn.addEventListener("click", () => {
-  message.textContent = `スコアは ${count} 回！`;
-  updateRanking(count);
+  message.textContent = `あなたの記録は ${count} 回です！`;
   showResultBtn.style.display = "none";
 
-  // 3秒後に「再スタート」ボタン表示
   setTimeout(() => {
-    restartBtn.style.display = "inline-block";
-  }, 2000);
+    restartBtn.style.display = "block";
+    if (!resultShown) {
+      resetBtn.style.display = "block";
+      resultShown = true;
+    }
+  }, 2000); // ← 2秒後に再スタート表示
 });
 
 restartBtn.addEventListener("click", () => {
-  location.reload(); // ページリロードでリセット
+  resetApp();
 });
 
 resetBtn.addEventListener("click", () => {
-  localStorage.removeItem("ranking");
-  loadRanking();
-  message.textContent = "記録をリセットしました。";
+  resetApp();
 });
-
-loadRanking();
