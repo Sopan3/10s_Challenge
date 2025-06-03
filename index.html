@@ -11,10 +11,17 @@
 <div class="container">
   <h1>10秒カウントチャレンジ！</h1>
   <div id="count">0</div>
+  <div id="timer">残り：10秒</div> <!-- タイマー表示を追加 -->
   <button id="startBtn">スタート</button>
   <button id="tapBtn" disabled>押せ！</button>
   <div id="message"></div>
+
+  <h2>🏆 youの記録</h2>
+  <ol id="rankingList"></ol>
 </div>
+
+<!-- CodePen の Settings > HTML > Stuff for <head> に追加 -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <!-- partial -->
   <script  src="./script.js"></script>
 

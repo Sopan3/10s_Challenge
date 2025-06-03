@@ -4,6 +4,7 @@ body {
   font-family: sans-serif;
   text-align: center;
   padding: 50px;
+  touch-action: manipulation; /* モバイルでの意図しない拡大防止 */
 }
 
 .container {
@@ -24,6 +25,12 @@ h1 {
   color: #4caf50;
 }
 
+#timer {
+  font-size: 24px;
+  color: #ff5722;
+  margin-bottom: 10px;
+}
+
 button {
   font-size: 20px;
   padding: 10px 25px;
@@ -34,6 +41,7 @@ button {
   background-color: #2196f3;
   color: white;
   transition: background-color 0.3s;
+  touch-action: manipulation; /* モバイル対応 */
 }
 
 button:disabled {
