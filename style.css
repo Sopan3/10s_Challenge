@@ -85,3 +85,9 @@ button:disabled {
   font-size: 22px;
   color: #ffd54f;
 }
+
+#rankingList {
+  list-style: none;
+  padding-left: 0;
+  text-align: center;
+}

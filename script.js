@@ -11,6 +11,32 @@ const resetBtn = document.getElementById("resetBtn");
 const countDisplay = document.getElementById("count");
 const timerDisplay = document.getElementById("timer");
 const message = document.getElementById("message");
+const rankingList = document.getElementById("rankingList");
+const recordSection = document.getElementById("recordSection");
+
+function loadRanking() {
+  const scores = JSON.parse(localStorage.getItem("ranking")) || [];
+  rankingList.innerHTML = "";
+  scores.forEach((score, index) => {
+    const li = document.createElement("li");
+    li.textContent = `${["1位", "2位", "3位"][index]}：${score} 回`;
+    rankingList.appendChild(li);
+  });
+
+  if (scores.length > 0) {
+    recordSection.style.display = "block";
+    resetBtn.style.display = "block";
+  }
+}
+
+function updateRanking(newScore) {
+  let scores = JSON.parse(localStorage.getItem("ranking")) || [];
+  scores.push(newScore);
+  scores.sort((a, b) => b - a);
+  scores = scores.slice(0, 3);
+  localStorage.setItem("ranking", JSON.stringify(scores));
+  loadRanking();
+}
 
 function resetApp() {
   count = 0;
@@ -22,8 +48,8 @@ function resetApp() {
   tapBtn.style.display = "none";
   showResultBtn.style.display = "none";
   restartBtn.style.display = "none";
-  resetBtn.style.display = "none";
-  resultShown = false;
+  tapBtn.disabled = false;
+  tapBtn.style.backgroundColor = "#03a9f4";
 }
 
 startBtn.addEventListener("click", () => {
@@ -34,7 +60,6 @@ startBtn.addEventListener("click", () => {
   tapBtn.style.display = "block";
   showResultBtn.style.display = "none";
   restartBtn.style.display = "none";
-  resetBtn.style.display = "none";
   message.textContent = "";
 
   interval = setInterval(() => {
@@ -47,12 +72,9 @@ startBtn.addEventListener("click", () => {
       timerDisplay.textContent = "終了！";
       setTimeout(() => {
         showResultBtn.style.display = "block";
-      }, 2000); // ← ここで2秒待って結果表示ボタン出現
+      }, 2000);
     }
   }, 1000);
-
-  tapBtn.disabled = false;
-  tapBtn.style.backgroundColor = "#03a9f4";
 });
 
 tapBtn.addEventListener("click", () => {
@@ -63,14 +85,11 @@ tapBtn.addEventListener("click", () => {
 showResultBtn.addEventListener("click", () => {
   message.textContent = `あなたの記録は ${count} 回です！`;
   showResultBtn.style.display = "none";
+  updateRanking(count); // ← 結果表示でランキングを更新
 
   setTimeout(() => {
     restartBtn.style.display = "block";
-    if (!resultShown) {
-      resetBtn.style.display = "block";
-      resultShown = true;
-    }
-  }, 2000); // ← 2秒後に再スタート表示
+  }, 2000);
 });
 
 restartBtn.addEventListener("click", () => {
@@ -78,5 +97,11 @@ restartBtn.addEventListener("click", () => {
 });
 
 resetBtn.addEventListener("click", () => {
-  resetApp();
+  localStorage.removeItem("ranking");
+  rankingList.innerHTML = "";
+  recordSection.style.display = "none";
+  resetBtn.style.display = "none";
 });
+
+// 初回読み込み時にランキング表示
+loadRanking();

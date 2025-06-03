@@ -2,265 +2,34 @@
 <html lang="en" >
 <head>
   <meta charset="UTF-8">
-  <title>カウントアプリ</title>
+  <title>10秒連打！アプリ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
+<link rel="stylesheet" href="./style.css">
 
 </head>
 <body>
 <!-- partial:index.partial.html -->
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>10秒連打チャレンジ</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    html,
-    body {
-      overflow-x: hidden;
-    }
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    body {
-      background-color: #1a1a1a;
-      color: #ffffff;
-      font-family: "Poppins", sans-serif;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      touch-action: manipulation;
-      -webkit-text-size-adjust: 100%;
-    }
+<div class="container">
+  <h1>10秒連打ゲーム！</h1>
+  <div id="timer">準備中...</div>
+  <div id="count">0</div>
+  <button id="startBtn">スタート</button>
+  <button id="tapBtn" style="display:none;">押せ！</button>
+  <button id="showResultBtn" style="display:none;">結果を表示する</button>
+  <div id="message"></div>
+  <button id="restartBtn" style="display:none;">再スタート</button>
 
-    .container {
-      background-color: #2c2c2c;
-      padding: 20px;
-      border-radius: 20px;
-      display: inline-block;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-      max-width: 400px;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    h1 {
-      margin-bottom: 25px;
-      font-weight: 600;
-      font-size: 28px;
-    }
-
-    #count {
-      font-size: 64px;
-      margin: 20px 0;
-      color: #4caf50;
-      font-weight: bold;
-    }
-
-    #timer {
-      font-size: 20px;
-      color: #ff9800;
-      margin-bottom: 20px;
-    }
-
-    button {
-      font-size: 20px;
-      padding: 12px 30px;
-      margin: 12px auto;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      background-color: #03a9f4;
-      color: #ffffff;
-      transition: all 0.3s ease;
-      font-weight: 600;
-      display: block;
-      touch-action: manipulation;
-    }
-
-    button:hover {
-      background-color: #0288d1;
-    }
-
-    button:disabled {
-      background-color: #777;
-      cursor: not-allowed;
-    }
-
-    #restartBtn {
-      background-color: #2196f3;
-    }
-
-    #resetBtn {
-      background-color: #e53935;
-      margin-top: 30px;
-    }
-
-    #message {
-      margin-top: 25px;
-      font-size: 22px;
-      color: #ffd54f;
-    }
-
-    #recordSection {
-      display: none;
-      margin-top: 30px;
-    }
-
-    #recordTitle {
-      font-size: 24px;
-      margin-bottom: 10px;
-    }
-
-    #rankingList {
-      list-style: none;
-      padding-left: 0;
-    }
-
-    #rankingList li::before {
-      content: none;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>10秒連打チャレンジ！</h1>
-    <div id="timer">準備中...</div>
-    <div id="count">0</div>
-    <button id="startBtn">スタート</button>
-    <button id="tapBtn" style="display:none;">押せ！</button>
-    <button id="showResultBtn" style="display:none;">結果を表示する</button>
-    <div id="message"></div>
-    <button id="restartBtn" style="display:none;">再スタート</button>
-
-    <div id="recordSection">
-      <div id="recordTitle">🏆 Your Record</div>
-      <ol id="rankingList"></ol>
-    </div>
-
-    <button id="resetBtn" style="display:none;">記録をリセット</button>
+  <div id="recordSection" style="display: none;">
+    <h2>🏆 Your Record</h2>
+    <ul id="rankingList"></ul>
   </div>
 
-  <script>
-    let count = 0;
-    let timer = 10;
-    let interval;
-    let resultShown = false;
-
-    const startBtn = document.getElementById("startBtn");
-    const tapBtn = document.getElementById("tapBtn");
-    const showResultBtn = document.getElementById("showResultBtn");
-    const restartBtn = document.getElementById("restartBtn");
-    const resetBtn = document.getElementById("resetBtn");
-    const countDisplay = document.getElementById("count");
-    const timerDisplay = document.getElementById("timer");
-    const message = document.getElementById("message");
-    const recordSection = document.getElementById("recordSection");
-    const rankingList = document.getElementById("rankingList");
-
-    function loadRanking() {
-      const scores = JSON.parse(localStorage.getItem("ranking")) || [];
-      rankingList.innerHTML = "";
-      scores.forEach((score, index) => {
-        const li = document.createElement("li");
-        li.textContent = `${index + 1}位：${score} 回`;
-        rankingList.appendChild(li);
-      });
-    }
-
-    function updateRanking(newScore) {
-      let scores = JSON.parse(localStorage.getItem("ranking")) || [];
-      scores.push(newScore);
-      scores.sort((a, b) => b - a);
-      scores = scores.slice(0, 3);
-      localStorage.setItem("ranking", JSON.stringify(scores));
-      loadRanking();
-    }
-
-    function resetApp() {
-      count = 0;
-      timer = 10;
-      countDisplay.textContent = "0";
-      timerDisplay.textContent = "準備中...";
-      message.textContent = "";
-      startBtn.style.display = "block";
-      tapBtn.style.display = "none";
-      showResultBtn.style.display = "none";
-      restartBtn.style.display = "none";
-      resetBtn.style.display = "none";
-      // recordSection は保持
-    }
-
-    startBtn.addEventListener("click", () => {
-      count = 0;
-      countDisplay.textContent = count;
-      timer = 10;
-      startBtn.style.display = "none";
-      tapBtn.style.display = "block";
-      showResultBtn.style.display = "none";
-      restartBtn.style.display = "none";
-      resetBtn.style.display = "none";
-      message.textContent = "";
-
-      interval = setInterval(() => {
-        timer--;
-        timerDisplay.textContent = `残り ${timer} 秒`;
-        if (timer <= 0) {
-          clearInterval(interval);
-          tapBtn.disabled = true;
-          tapBtn.style.backgroundColor = "#777";
-          timerDisplay.textContent = "終了！";
-          setTimeout(() => {
-            showResultBtn.style.display = "block";
-          }, 2000);
-        }
-      }, 1000);
-
-      tapBtn.disabled = false;
-      tapBtn.style.backgroundColor = "#03a9f4";
-    });
-
-    tapBtn.addEventListener("click", () => {
-      count++;
-      countDisplay.textContent = count;
-    });
-
-    showResultBtn.addEventListener("click", () => {
-      message.textContent = `あなたの記録は ${count} 回です！`;
-      showResultBtn.style.display = "none";
-      updateRanking(count);
-      recordSection.style.display = "block";
-
-      setTimeout(() => {
-        restartBtn.style.display = "block";
-        resetBtn.style.display = "block";
-        resultShown = true;
-      }, 2000);
-    });
-
-    restartBtn.addEventListener("click", () => {
-      resetApp();
-    });
-
-    resetBtn.addEventListener("click", () => {
-      localStorage.removeItem("ranking");
-      loadRanking();
-      resetApp();
-    });
-
-    // 初回読み込み時にランキングを表示しておく（2回目以降保持のため）
-    loadRanking();
-    if (localStorage.getItem("ranking")) {
-      recordSection.style.display = "block";
-    }
-  </script>
-</body>
-</html>
+  <button id="resetBtn" style="display:none;">記録をリセット</button>
+</div>
 <!-- partial -->
-  
+  <script  src="./script.js"></script>
+
 </body>
 </html>
