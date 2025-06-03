@@ -73,7 +73,7 @@ startBtn.addEventListener("click", () => {
     // 3秒後に「結果を表示」ボタン
     setTimeout(() => {
       showResultBtn.style.display = "inline-block";
-    }, 3000);
+    }, 2000);
   }, 10000);
 });
 
@@ -90,7 +90,7 @@ showResultBtn.addEventListener("click", () => {
   // 3秒後に「再スタート」ボタン表示
   setTimeout(() => {
     restartBtn.style.display = "inline-block";
-  }, 3000);
+  }, 2000);
 });
 
 restartBtn.addEventListener("click", () => {
