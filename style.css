@@ -76,21 +76,21 @@ button:disabled {
 /* ==== ここからスマホ用（画面幅 600px 以下） ==== */
 @media (max-width: 600px) {
   body {
-    padding: 20px;              /* 余白を少し縮める */
+    padding: 20px; /* 余白を少し縮める */
   }
 
   .container {
     padding: 30px;
     border-radius: 16px;
-    width: 100%;               /* 横いっぱいに広げる */
+    width: 100%; /* 横いっぱいに広げる */
   }
 
   h1 {
-    font-size: 22px;           /* 見出しをやや大きめに */
+    font-size: 22px; /* 見出しをやや大きめに */
   }
 
   #count {
-    font-size: 48px;           /* メイン数字を大きめに */
+    font-size: 48px; /* メイン数字を大きめに */
     margin: 15px 0;
   }
 
@@ -100,8 +100,8 @@ button:disabled {
   }
 
   button {
-    font-size: 18px;           /* ボタン文字を大きめに */
-    padding: 14px 0;           /* 押しやすく幅いっぱい */
+    font-size: 18px; /* ボタン文字を大きめに */
+    padding: 14px 0; /* 押しやすく幅いっぱい */
     width: 100%;
     margin: 10px 0;
   }
@@ -112,7 +112,7 @@ button:disabled {
   }
 
   ol#rankingList li {
-    font-size: 18px;           /* ランキング行も少し大きく */
+    font-size: 18px; /* ランキング行も少し大きく */
   }
 }
 /* ==== スマホ用ここまで ==== */
